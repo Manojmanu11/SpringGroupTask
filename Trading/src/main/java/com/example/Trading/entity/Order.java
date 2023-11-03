@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "stock_order")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = ErrorConstants.Stock_Symbol_Not_Blank)
     @Size(min = 10, max = 25, message = ErrorConstants.Stock_Symbol_Length)
