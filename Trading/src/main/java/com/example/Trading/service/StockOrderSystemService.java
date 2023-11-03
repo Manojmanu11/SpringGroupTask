@@ -4,6 +4,8 @@ import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.TradeDto;
 import com.example.Trading.entity.Order;
 
+import java.util.List;
+
 public interface StockOrderSystemService {
 
     Order addOrder(OrderDto orderDto);
@@ -12,7 +14,7 @@ public interface StockOrderSystemService {
 
     OrderDto getPortfolio(OrderDto orderDto);
 
-    TradeDto getTradeHistory(TradeDto tradeDto);
+    List<TradeDto> getTradeHistory();
 
 
 

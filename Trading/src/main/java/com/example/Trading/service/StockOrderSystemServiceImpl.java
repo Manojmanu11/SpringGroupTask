@@ -1,15 +1,17 @@
 package com.example.Trading.service;
 
 import com.example.Trading.dto.OrderDto;
-import com.example.Trading.dto.OrderType;
 import com.example.Trading.dto.TradeDto;
 import com.example.Trading.entity.Order;
+import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StockOrderSystemServiceImpl implements StockOrderSystemService{
@@ -48,7 +50,23 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
     }
 
     @Override
-    public TradeDto getTradeHistory(TradeDto tradeDto) {
-        return null;
+    public List<TradeDto> getTradeHistory() {
+        List<Trade> trades = tradeRepository.findAll();
+        List<TradeDto> tradeHistory = trades.stream()
+                .map(this::mapToTradeHistoryDTO)
+                .collect(Collectors.toList());
+        return  tradeHistory;
     }
+
+        private TradeDto mapToTradeHistoryDTO(Trade trade) {
+            TradeDto tradeHistoryDTO = new TradeDto();
+//            tradeHistoryDTO.setId(trade.getId());
+            tradeHistoryDTO.setStockSymbol(trade.getStockSymbol());
+            tradeHistoryDTO.setOrderType(trade.getOrderType());
+            tradeHistoryDTO.setPrice(trade.getPrice());
+            tradeHistoryDTO.setQuantity(trade.getQuantity());
+            tradeHistoryDTO.setTimestamp(trade.getTimestamp());
+            return tradeHistoryDTO;
+        }
+
 }
