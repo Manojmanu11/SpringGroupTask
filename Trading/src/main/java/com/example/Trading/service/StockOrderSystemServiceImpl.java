@@ -2,7 +2,7 @@ package com.example.Trading.service;
 
 import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.TradeDto;
-import com.example.Trading.dto.UpdatedPrice;
+import com.example.Trading.dto.UpdatedPriceDto;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
@@ -27,7 +27,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
 
    // UpdateService for stockSymbols UpdatePrice
     @Override
-    public UpdatedPrice updatePrice(OrderDto req) {
+    public UpdatedPriceDto updatePrice(OrderDto req) {
         List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
 
         if (!stockOrders.isEmpty()) {
@@ -35,7 +35,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
                 order.setPrice(req.getPrice());
                 orderRepository.save(order);
 
-                UpdatedPrice priceDTO = new UpdatedPrice();
+                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
                 priceDTO.setInfoMsg("Successfully Updated");
                 priceDTO.setStockSymbol(order.getStockSymbol());
                 priceDTO.setPrice(order.getPrice());
