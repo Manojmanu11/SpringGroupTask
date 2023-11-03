@@ -6,8 +6,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+@Data
 
 public class OrderDto {
     private String stockSymbol;
