@@ -23,7 +23,7 @@ public class StockOrderSystemController {
         Order order = stockOrderService.addOrder(orderDto);
         return new ResponseEntity<>(order,HttpStatus.CREATED);
     }
-    @GetMapping("/history")
+    @GetMapping("/getTradeHistory")
     public List<TradeDto> getTradeHistory() {
         return stockOrderService.getTradeHistory();
     }
