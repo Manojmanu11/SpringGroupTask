@@ -6,7 +6,7 @@ import com.example.Trading.entity.Order;
 
 public interface StockOrderSystemService {
 
-    OrderDto addOrder(OrderDto orderDto);
+    Order addOrder(OrderDto orderDto);
     OrderDto updatePrice( String StockSymbol,Double price );
     OrderDto matchOrders(OrderDto orderDto);
 
