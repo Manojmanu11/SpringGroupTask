@@ -4,9 +4,11 @@ import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.OrderType;
 import com.example.Trading.dto.TradeDto;
 import com.example.Trading.entity.Order;
+import com.example.Trading.exception.InvalidOrderTypeException;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,7 +31,6 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
         order.setTimestamp(LocalDateTime.now());
 
         return orderRepository.save(order);
-
     }
 
     @Override
