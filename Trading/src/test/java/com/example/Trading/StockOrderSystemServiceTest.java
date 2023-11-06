@@ -3,17 +3,21 @@ package com.example.Trading;
 import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.OrderType;
+import com.example.Trading.dto.UpdatedPriceDto;
 import com.example.Trading.entity.Order;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.service.StockOrderSystemService;
 import com.example.Trading.service.StockOrderSystemServiceImpl;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,6 +109,29 @@ public class StockOrderSystemServiceTest {
         order.setQuantity(quantity);
         return order;
     }
+    @Test
+    public void testUpdatePriceSuccess() {
+        OrderDto request = new OrderDto();
+        request.setStockSymbol("BAJAJ");
+        request.setPrice(100.0);
 
+        Order order = new Order();
+        order.setStockSymbol("BAJAJ");
+        UpdatedPriceDto expectedResponse = new UpdatedPriceDto();
+        expectedResponse.setInfoMsg("Successfully Updated");
+        expectedResponse.setStockSymbol("BAJAJ");
+        expectedResponse.setPrice(100.0);
+        System.out.println("The expectedResp " + expectedResponse);
 
+        Mockito.when(orderRepository.findByStockSymbol("BAJAJ")).thenReturn(Collections.singletonList(order));
+        Mockito.when(orderRepository.save(order)).thenReturn(order);
+
+        UpdatedPriceDto response = stockOrderService.updatePrice(request);
+        System.out.println("UpdatedPrice Response " + response);
+
+        Assert.assertEquals(expectedResponse, response);
+    }
 }
+
+
+

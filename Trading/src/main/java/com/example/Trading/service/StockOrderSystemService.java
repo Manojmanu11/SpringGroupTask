@@ -11,14 +11,15 @@ import java.util.List;
 public interface StockOrderSystemService {
 
     Order addOrder(OrderDto orderDto);
+
     UpdatedPriceDto updatePrice(OrderDto req);
-   void matchOrder();
+
+    void matchOrder();
 
 
     OrderDto getPortfolio(OrderDto orderDto);
 
     TradeDto getTradeHistory(TradeDto tradeDto);
-
 
 
 }

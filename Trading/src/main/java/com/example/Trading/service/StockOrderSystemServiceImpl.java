@@ -46,27 +46,26 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     public UpdatedPriceDto updatePrice(OrderDto req) {
         List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
 
-
         if (!stockOrders.isEmpty()) {
+            double newPrice = req.getPrice();
+
             for (Order order : stockOrders) {
-                order.setPrice(req.getPrice());
+                order.setPrice(newPrice);
                 orderRepository.save(order);
-
-                additionalValue = 1;
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
-                priceDTO.setInfoMsg("Successfully Updated");
-                priceDTO.setStockSymbol(order.getStockSymbol());
-                priceDTO.setPrice(order.getPrice());
-                return priceDTO;
             }
-        }
 
+            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+            priceDTO.setInfoMsg("Successfully Updated");
+            priceDTO.setStockSymbol(req.getStockSymbol());
+            priceDTO.setPrice(newPrice);
+            return priceDTO;
+        }
         return null; // Return null if no orders were found for the stock symbol
     }
 
-
     @Scheduled(fixedRate = 60000) // Scheduled task to clear the updated price every minute
     public void clearUpdatedPrice() {
+        log.info("The updated price has been cleared");
         additionalValue = 0;
     }
 
@@ -74,21 +73,24 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     @Scheduled(fixedRate = 30000)
     public void matchOrder() {
         log.info("Returned by StockOrderSystemService : matchOrder");
-        List<Order> buyOrders = orderRepository.findBuyOrders();
-        List<Order> sellOrders = orderRepository.findSellOrders();
-        for (Order buyOrder : buyOrders) {
-            for (Order sellOrder : sellOrders) {
-                if (isMatchingOrders(buyOrder, sellOrder)) {
-                    int transactionQuantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
-                    if (transactionQuantity > 0) {
-                        Trade buyTrade = createTrade(buyOrder, StringConstants.Buy, transactionQuantity);
-                        Trade sellTrade = createTrade(sellOrder, StringConstants.Sell, transactionQuantity);
-                        updateOrder(buyOrder, transactionQuantity);
-                        updateOrder(sellOrder, transactionQuantity);
+        if (additionalValue != 0) {
+            log.info("Updateprice method is called");
+            List<Order> buyOrders = orderRepository.findBuyOrders();
+            List<Order> sellOrders = orderRepository.findSellOrders();
+            for (Order buyOrder : buyOrders) {
+                for (Order sellOrder : sellOrders) {
+                    if (isMatchingOrders(buyOrder, sellOrder)) {
+                        int transactionQuantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
+                        if (transactionQuantity > 0) {
+                            Trade buyTrade = createTrade(buyOrder, StringConstants.Buy, transactionQuantity);
+                            Trade sellTrade = createTrade(sellOrder, StringConstants.Sell, transactionQuantity);
+                            updateOrder(buyOrder, transactionQuantity);
+                            updateOrder(sellOrder, transactionQuantity);
 //                        updateUserTradeHistory( buyTrade);
 //                        updateUserTradeHistory( sellTrade);
 
 
+                        }
                     }
                 }
             }
