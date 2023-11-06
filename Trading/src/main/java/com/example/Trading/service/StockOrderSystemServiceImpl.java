@@ -4,12 +4,14 @@ import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.OrderType;
 import com.example.Trading.dto.TradeDto;
+import com.example.Trading.dto.UpdatedPriceDto;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,10 +20,15 @@ import java.util.List;
 @Service
 @Slf4j
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
+    private final OrderRepository orderRepository;
+    private final TradeRepository tradeRepository;
+    int additionalValue = 1;
+
     @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    TradeRepository tradeRepository;
+    public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
+        this.orderRepository = orderRepository;
+        this.tradeRepository = tradeRepository;
+    }
 
     @Override
     public Order addOrder(OrderDto orderDto) {
@@ -36,14 +43,36 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         return orderRepository.save(order);
     }
 
-    @Override
-    public OrderDto updatePrice(String StockSymbol, Double price) {
-        return null;
+    public UpdatedPriceDto updatePrice(OrderDto req) {
+        List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
+
+
+        if (!stockOrders.isEmpty()) {
+            for (Order order : stockOrders) {
+                order.setPrice(req.getPrice());
+                orderRepository.save(order);
+
+                additionalValue = 1;
+                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+                priceDTO.setInfoMsg("Successfully Updated");
+                priceDTO.setStockSymbol(order.getStockSymbol());
+                priceDTO.setPrice(order.getPrice());
+                return priceDTO;
+            }
+        }
+
+        return null; // Return null if no orders were found for the stock symbol
     }
 
-    @Override
-    public void matchOrder() {
 
+    @Scheduled(fixedRate = 60000) // Scheduled task to clear the updated price every minute
+    public void clearUpdatedPrice() {
+        additionalValue = 0;
+    }
+
+
+    @Scheduled(fixedRate = 30000)
+    public void matchOrder() {
         log.info("Returned by StockOrderSystemService : matchOrder");
         List<Order> buyOrders = orderRepository.findBuyOrders();
         List<Order> sellOrders = orderRepository.findSellOrders();
@@ -81,7 +110,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         return trade;
     }
 
-     void updateOrder(Order order, int quantity) {
+    void updateOrder(Order order, int quantity) {
         order.setQuantity(order.getQuantity() - quantity);
         if (order.getQuantity() == 0) {
             order.setStatus(StringConstants.EXECUTED);

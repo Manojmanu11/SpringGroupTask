@@ -24,7 +24,5 @@ public class StockOrderSystemController {
         Order order = stockOrderService.addOrder(orderDto);
         return new ResponseEntity<>(order,HttpStatus.CREATED);
     }
-   public ResponseEntity matchOrder(){
 
-   }
 }

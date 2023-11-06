@@ -14,5 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.orderType = 'SELL'")
     List<Order> findSellOrders();
+    List<Order> findByStockSymbol(String stockSymbol);
 
 }
