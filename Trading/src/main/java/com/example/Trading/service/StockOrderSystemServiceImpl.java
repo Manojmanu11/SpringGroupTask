@@ -2,14 +2,22 @@ package com.example.Trading.service;
 
 import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderDto;
-import com.example.Trading.dto.OrderType;
 import com.example.Trading.dto.TradeDto;
 import com.example.Trading.dto.UpdatedPriceDto;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
+
+import com.example.Trading.exception.InvalidOrderTypeException;
+import com.example.Trading.repository.OrderRepository;
+import com.example.Trading.repository.TradeRepository;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,7 +25,21 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.stream.Collectors;
+
+
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Service
+public class StockOrderSystemServiceImpl implements StockOrderSystemService{
+    
+
+    @Autowired
+    OrderRepository orderRepository;
+    
+
 @Slf4j
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
@@ -126,7 +148,22 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     }
 
     @Override
-    public TradeDto getTradeHistory(TradeDto tradeDto) {
-        return null;
+    public List<TradeDto> getTradeHistory() {
+        List<Trade> trades = tradeRepository.findAll();
+        List<TradeDto> tradeDtoHistory=trades.stream()
+                .map(this::mapToTradeHistoryDTO)
+                .collect(Collectors.toList());
+        return tradeDtoHistory;
     }
+
+        private TradeDto mapToTradeHistoryDTO(Trade trade) {
+            TradeDto tradeHistoryDTO = new TradeDto();
+            tradeHistoryDTO.setStockSymbol(trade.getStockSymbol());
+            tradeHistoryDTO.setOrderType(trade.getOrderType());
+            tradeHistoryDTO.setPrice(trade.getPrice());
+            tradeHistoryDTO.setQuantity(trade.getQuantity());
+            tradeHistoryDTO.setTimestamp(trade.getTimestamp());
+            return tradeHistoryDTO;
+        }
+
 }

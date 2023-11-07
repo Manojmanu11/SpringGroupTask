@@ -8,6 +8,8 @@ import com.example.Trading.entity.Trade;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface StockOrderSystemService {
 
     Order addOrder(OrderDto orderDto);
@@ -19,7 +21,7 @@ public interface StockOrderSystemService {
 
     OrderDto getPortfolio(OrderDto orderDto);
 
-    TradeDto getTradeHistory(TradeDto tradeDto);
+    List<TradeDto> getTradeHistory();
 
 
 }
