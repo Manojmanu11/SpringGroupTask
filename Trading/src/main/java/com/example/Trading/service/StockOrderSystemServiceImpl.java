@@ -31,18 +31,19 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
         List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
 
         if (!stockOrders.isEmpty()) {
+            double newPrice = req.getPrice();
+
             for (Order order : stockOrders) {
-                order.setPrice(req.getPrice());
+                order.setPrice(newPrice);
                 orderRepository.save(order);
-
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
-                priceDTO.setInfoMsg("Successfully Updated");
-                priceDTO.setStockSymbol(order.getStockSymbol());
-                priceDTO.setPrice(order.getPrice());
-                return priceDTO;
             }
-        }
 
+            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+            priceDTO.setInfoMsg("Successfully Updated");
+            priceDTO.setStockSymbol(req.getStockSymbol());
+            priceDTO.setPrice(newPrice);
+            return priceDTO;
+        }
         return null; // Return null if no orders were found for the stock symbol
     }
 
