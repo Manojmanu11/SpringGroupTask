@@ -32,6 +32,7 @@ public class StockOrderSystemController {
     @GetMapping("/getTradeHistory")
     public List<TradeDto> getTradeHistory() {
         return stockOrderService.getTradeHistory();
+    }
 
     @PutMapping("/updatePrice")
     public ResponseEntity<UpdatedPriceDto> stockPrice(@RequestBody OrderDto orderDto) {
