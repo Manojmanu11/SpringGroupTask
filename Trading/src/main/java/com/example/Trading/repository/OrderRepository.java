@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+public interface OrderRepository extends JpaRepository<Order,Long> {
+    List<Order> findByStockSymbol(String stockSymbol);
+
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.orderType = 'BUY'")
     List<Order> findBuyOrders();

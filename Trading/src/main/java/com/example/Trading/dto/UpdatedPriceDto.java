@@ -7,4 +7,6 @@ public class UpdatedPriceDto {
     private String infoMsg;
     private String stockSymbol;
     private double price;
+
 }
+

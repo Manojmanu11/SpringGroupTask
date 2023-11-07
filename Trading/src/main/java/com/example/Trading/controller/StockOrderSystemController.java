@@ -1,6 +1,9 @@
 package com.example.Trading.controller;
 
 import com.example.Trading.dto.OrderDto;
+
+import com.example.Trading.dto.UpdatedPriceDto;
+
 import com.example.Trading.dto.TradeDto;
 
 import com.example.Trading.dto.UpdatedPrice;
@@ -13,16 +16,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
-
-
 @RestController
-@RequestMapping
+
 public class StockOrderSystemController {
 
     @Autowired
+
+    StockOrderSystemService stockOrderSystemService;
+
+    @PutMapping("/updatePrice")
+    public ResponseEntity<UpdatedPriceDto> stockPrice(@RequestBody OrderDto orderDto) {
+        UpdatedPriceDto updatedOrder = stockOrderSystemService.updatePrice(orderDto);
+
     StockOrderSystemService stockOrderService;
 
     @PostMapping("/add")
