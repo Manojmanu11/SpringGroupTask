@@ -4,6 +4,7 @@ import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.TradeDto;
 import com.example.Trading.dto.UpdatedPriceDto;
+import com.example.Trading.dto.OrderType;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
 
