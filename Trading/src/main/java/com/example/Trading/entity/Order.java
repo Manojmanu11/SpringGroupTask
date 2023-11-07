@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
