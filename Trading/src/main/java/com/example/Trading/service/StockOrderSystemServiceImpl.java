@@ -7,6 +7,9 @@ import com.example.Trading.entity.Trade;
 import com.example.Trading.exception.InvalidOrderTypeException;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Service
 public class StockOrderSystemServiceImpl implements StockOrderSystemService{
+    
+
     @Autowired
     OrderRepository orderRepository;
+    
     @Autowired
     TradeRepository tradeRepository;
 
@@ -53,10 +62,10 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService{
     @Override
     public List<TradeDto> getTradeHistory() {
         List<Trade> trades = tradeRepository.findAll();
-        List<TradeDto> tradeHistory = trades.stream()
+        List<TradeDto> tradeDtoHistory=trades.stream()
                 .map(this::mapToTradeHistoryDTO)
                 .collect(Collectors.toList());
-        return  tradeHistory;
+        return tradeDtoHistory;
     }
 
         private TradeDto mapToTradeHistoryDTO(Trade trade) {
