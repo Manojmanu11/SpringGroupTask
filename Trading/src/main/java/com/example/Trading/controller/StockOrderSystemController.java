@@ -2,8 +2,6 @@ package com.example.Trading.controller;
 
 import com.example.Trading.dto.OrderDto;
 
-import com.example.Trading.dto.UpdatedPriceDto;
-
 import com.example.Trading.dto.TradeDto;
 
 import com.example.Trading.dto.UpdatedPrice;
@@ -23,15 +21,8 @@ import java.util.List;
 public class StockOrderSystemController {
 
     @Autowired
-
-    StockOrderSystemService stockOrderSystemService;
-
-    @PutMapping("/updatePrice")
-    public ResponseEntity<UpdatedPriceDto> stockPrice(@RequestBody OrderDto orderDto) {
-        UpdatedPriceDto updatedOrder = stockOrderSystemService.updatePrice(orderDto);
-
     StockOrderSystemService stockOrderService;
-
+   
     @PostMapping("/add")
     public ResponseEntity<Order> addOrder(@RequestBody OrderDto orderDto) {
         Order order = stockOrderService.addOrder(orderDto);
