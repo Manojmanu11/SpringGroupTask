@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "stock_order")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = ErrorConstants.Stock_Symbol_Not_Blank)
     @Size(min = 10, max = 25, message = ErrorConstants.Stock_Symbol_Length)
@@ -32,5 +31,10 @@ public class Order {
     private String status;
 
     private LocalDateTime timestamp;
-
+    public Order(String stockSymbol, double price, int quantity, String status) {
+        this.stockSymbol = stockSymbol;
+        this.price = price;
+        this.quantity = quantity;
+        this.status = status;
+    }
 }

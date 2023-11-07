@@ -16,4 +16,6 @@ public class ErrorConstants {
 
     public static final String Order_NotFound = "Order not found";
     public static final String Order_Integer = "Enter integer value for orderId";
+    public static final String Invalid_Order_Type = "Invalid OrderType. Supported values are BUY and SELL.";
+    public static String Invalid_Request_Body = "Invalid Request Body";
 }
