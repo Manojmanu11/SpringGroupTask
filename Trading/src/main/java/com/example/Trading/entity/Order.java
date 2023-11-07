@@ -1,6 +1,7 @@
 package com.example.Trading.entity;
 
 import com.example.Trading.constants.ErrorConstants;
+import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "stock_order")
+@Table(name = StringConstants.TABLE_NAME)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +32,4 @@ public class Order {
     private String status;
 
     private LocalDateTime timestamp;
-    public Order(String stockSymbol, double price, int quantity, String status) {
-        this.stockSymbol = stockSymbol;
-        this.price = price;
-        this.quantity = quantity;
-        this.status = status;
-    }
 }

@@ -1,10 +1,7 @@
 package com.example.Trading.service;
 
 import com.example.Trading.constants.StringConstants;
-import com.example.Trading.dto.OrderDto;
-import com.example.Trading.dto.OrderType;
-import com.example.Trading.dto.TradeDto;
-import com.example.Trading.dto.UpdatedPriceDto;
+import com.example.Trading.dto.*;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
@@ -16,13 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
     private final TradeRepository tradeRepository;
-    int additionalValue = 1;
+    int additionalValue = 0;
 
     @Autowired
     public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
@@ -37,7 +35,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         order.setOrderType(orderDto.getOrderType());
         order.setQuantity(orderDto.getQuantity());
         order.setPrice(orderDto.getPrice());
-        order.setStatus(orderDto.getStatus());
+        order.setStatus(StringConstants.PENDING);
         order.setTimestamp(LocalDateTime.now());
 
         return orderRepository.save(order);
@@ -45,7 +43,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
 
     public UpdatedPriceDto updatePrice(OrderDto req) {
         List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
-
+        additionalValue = 1;
         if (!stockOrders.isEmpty()) {
             double newPrice = req.getPrice();
 
@@ -74,7 +72,8 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     public void matchOrder() {
         log.info("Returned by StockOrderSystemService : matchOrder");
         if (additionalValue != 0) {
-            log.info("Updateprice method is called");
+            System.out.println(additionalValue);
+            log.info("Update price method is called");
             List<Order> buyOrders = orderRepository.findBuyOrders();
             List<Order> sellOrders = orderRepository.findSellOrders();
             for (Order buyOrder : buyOrders) {
@@ -82,12 +81,8 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
                     if (isMatchingOrders(buyOrder, sellOrder)) {
                         int transactionQuantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
                         if (transactionQuantity > 0) {
-                            Trade buyTrade = createTrade(buyOrder, StringConstants.Buy, transactionQuantity);
-                            Trade sellTrade = createTrade(sellOrder, StringConstants.Sell, transactionQuantity);
                             updateOrder(buyOrder, transactionQuantity);
                             updateOrder(sellOrder, transactionQuantity);
-//                        updateUserTradeHistory( buyTrade);
-//                        updateUserTradeHistory( sellTrade);
 
 
                         }
@@ -98,21 +93,15 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     }
 
 
+
+
     private boolean isMatchingOrders(Order buyOrder, Order sellOrder) {
         return buyOrder.getStockSymbol().equals(sellOrder.getStockSymbol()) && buyOrder.getPrice() >= sellOrder.getPrice() && buyOrder.getStatus().equals(StringConstants.PENDING) && sellOrder.getStatus().equals(StringConstants.PENDING);
     }
 
-    private Trade createTrade(Order order, String orderType, int quantity) {
-        Trade trade = new Trade();
-        trade.setStockSymbol(order.getStockSymbol());
-        trade.setOrderType(OrderType.valueOf(orderType));
-        trade.setQuantity(quantity);
-        trade.setPrice(order.getPrice());
-        trade.setTimestamp(LocalDateTime.now());
-        return trade;
-    }
 
     void updateOrder(Order order, int quantity) {
+
         order.setQuantity(order.getQuantity() - quantity);
         if (order.getQuantity() == 0) {
             order.setStatus(StringConstants.EXECUTED);
@@ -120,13 +109,36 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         orderRepository.save(order);
     }
 
-    @Override
-    public OrderDto getPortfolio(OrderDto orderDto) {
-        return null;
+    public List<PortfolioDto> getPortfolio() {
+
+        List<Order> orders = orderRepository.findAll();
+        List<PortfolioDto> portfolioDTOs = orders.stream().map(order -> {
+            PortfolioDto portfolioDTO = new PortfolioDto();
+            portfolioDTO.setStockSymbol(order.getStockSymbol());
+            portfolioDTO.setQuantity(order.getQuantity());
+            portfolioDTO.setOrderStatus(order.getStatus());
+            portfolioDTO.setTimestamp(order.getTimestamp());
+            return portfolioDTO;
+        }).collect(Collectors.toList());
+
+        return portfolioDTOs;
     }
 
-    @Override
-    public TradeDto getTradeHistory(TradeDto tradeDto) {
-        return null;
+    public List<TradeDto> getTradeHistory() {
+        List<Trade> trades = tradeRepository.findAll();
+        List<TradeDto> tradeDtoHistory = trades.stream()
+                .map(this::mapToTradeHistoryDTO)
+                .collect(Collectors.toList());
+        return tradeDtoHistory;
+    }
+
+    private TradeDto mapToTradeHistoryDTO(Trade trade) {
+        TradeDto tradeHistoryDTO = new TradeDto();
+        tradeHistoryDTO.setStockSymbol(trade.getStockSymbol());
+        tradeHistoryDTO.setOrderType(trade.getOrderType());
+        tradeHistoryDTO.setPrice(trade.getPrice());
+        tradeHistoryDTO.setQuantity(trade.getQuantity());
+        tradeHistoryDTO.setTimestamp(trade.getTimestamp());
+        return tradeHistoryDTO;
     }
 }
