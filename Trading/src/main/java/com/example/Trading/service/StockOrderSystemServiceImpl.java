@@ -29,13 +29,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Service
-public class StockOrderSystemServiceImpl implements StockOrderSystemService{
-    
-
-    @Autowired
-    OrderRepository orderRepository;
-    
-
 @Slf4j
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
