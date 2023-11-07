@@ -1,10 +1,5 @@
 package com.example.Trading;
 
-import com.example.Trading.dto.OrderDto;
-import com.example.Trading.dto.UpdatedPriceDto;
-import com.example.Trading.entity.Order;
-import com.example.Trading.repository.OrderRepository;
-
 import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.OrderDto;
 import com.example.Trading.dto.OrderType;
@@ -12,32 +7,10 @@ import com.example.Trading.dto.UpdatedPriceDto;
 import com.example.Trading.entity.Order;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.service.StockOrderSystemService;
-
 import com.example.Trading.service.StockOrderSystemServiceImpl;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Collections;
-
-
-@SpringBootTest
-public class StockOrderSystemServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
-    @InjectMocks
-    private StockOrderSystemServiceImpl stockOrderService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
