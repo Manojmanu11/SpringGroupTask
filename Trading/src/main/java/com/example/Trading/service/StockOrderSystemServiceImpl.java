@@ -136,13 +136,6 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         return null;
     }
 
-    @Override
-    public TradeDto getTradeHistory(TradeDto tradeDto) {
-       return null;
-    }
-
-}
-
     public List<TradeDto> getTradeHistory() {
         List<Trade> trades = tradeRepository.findAll();
         List<TradeDto> tradeDtoHistory=trades.stream()
