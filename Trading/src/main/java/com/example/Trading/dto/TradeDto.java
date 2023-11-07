@@ -3,11 +3,6 @@ package com.example.Trading.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.Data;
-
-import java.time.LocalDateTime;
-@Data
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
