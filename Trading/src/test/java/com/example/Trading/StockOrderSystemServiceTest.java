@@ -38,16 +38,17 @@ public class StockOrderSystemServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         stockOrderService = new StockOrderSystemServiceImpl(orderRepository, tradeRepository);
-        mockOrder = createMockOrder("ABC", 10.0, StringConstants.PENDING, 10);
+        mockOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 10);
     }
 
     // Helper method to create a mock order
-    private Order createMockOrder(String stockSymbol, double price, String status, int quantity) {
+    private Order createMockOrder(String stockSymbol, double price, OrderType orderType, String status, int quantity) {
         Order order = new Order();
         order.setStockSymbol(stockSymbol);
         order.setPrice(price);
         order.setStatus(status);
         order.setQuantity(quantity);
+        order.setOrderType(orderType);
         return order;
     }
 
@@ -59,7 +60,7 @@ public class StockOrderSystemServiceTest {
         orderDto.setPrice(10.0);
         orderDto.setQuantity(5);
 
-        Order mockSavedOrder = createMockOrder("ABC", 10.0, StringConstants.PENDING, 5);
+        Order mockSavedOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 5);
         when(orderRepository.save(any(Order.class))).thenReturn(mockSavedOrder);
 
         Order savedOrder = stockOrderService.addOrder(orderDto);
@@ -70,9 +71,10 @@ public class StockOrderSystemServiceTest {
     public void testUpdatePriceSuccess() {
         OrderDto request = new OrderDto();
         request.setStockSymbol("ABC");
+        request.setOrderType(OrderType.BUY);
         request.setPrice(100.0);
 
-        Order mockOrder = createMockOrder("ABC", 10.0, StringConstants.PENDING, 10);
+        Order mockOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 10);
 
         UpdatedPriceDto expectedResponse = new UpdatedPriceDto();
         expectedResponse.setInfoMsg("Successfully Updated");
@@ -125,8 +127,8 @@ public class StockOrderSystemServiceTest {
         when(orderRepository.findSellOrders()).thenReturn(sellOrders);
 
         // Create mock buy and sell orders and add them to the respective lists
-        Order buyOrder = createMockOrder("ABC", 10.0, StringConstants.PENDING, 10);
-        Order sellOrder = createMockOrder("ABC", 9.0, StringConstants.PENDING, 15);
+        Order buyOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 10);
+        Order sellOrder = createMockOrder("ABC", 9.0,OrderType.SELL, StringConstants.PENDING, 15);
         buyOrders.add(buyOrder);
         sellOrders.add(sellOrder);
 

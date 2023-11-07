@@ -1,0 +1,319 @@
+{
+	"info": {
+		"_postman_id": "d1cca2ac-71bc-4945-b9a6-ac0cab2fa1f1",
+		"name": "SpringBootGroupTask",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23665118"
+	},
+	"item": [
+		{
+			"name": "stockmanagement",
+			"item": [
+				{
+					"name": "Add stock",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n   \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_NSE\",\r\n   \"orderType\": \"BUY\",\r\n   \"price\": 200.0,\r\n   \"quantity\": 5\r\n   }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/stocks/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"stocks",
+								"add"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "stock Resp eg",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \r\n   \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_NSE\",\r\n   \"orderType\": \"BUY\",\r\n   \"price\": 200.0,\r\n   \"quantity\": 5\r\n   }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/stocks/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"stocks",
+										"add"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "156"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Nov 2023 15:00:15 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_NSE\",\n    \"orderType\": \"BUY\",\n    \"price\": 200,\n    \"quantity\": 5,\n    \"status\": \"PENDING\",\n    \"timestamp\": \"2023-11-07T20:30:15.8194002\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Price",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n   \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_BSE\",\r\n   \"orderType\":\"BUY\",\r\n   \"price\": 388.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/stocks/updatePrice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"stocks",
+								"updatePrice"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "UpdatePrice Resp eg",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \r\n   \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_BSE\",\r\n   \"price\": 370.0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/stocks/updatePrice",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"stocks",
+										"updatePrice"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "90"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Nov 2023 15:02:44 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"infoMsg\": \"Successfully Updated\",\n    \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_BSE\",\n    \"price\": 370\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/stocks/portfolio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"stocks",
+								"portfolio"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "portfolio Resp eg",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/stocks/portfolio",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"stocks",
+										"portfolio"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "357"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Nov 2023 15:04:06 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"stockSymbol\": \"STK_WIPRO_EQ_NSE\",\n        \"quantity\": 20,\n        \"orderStatus\": \"PENDING\",\n        \"timestamp\": \"2023-11-07T20:10:27.509251\"\n    },\n    {\n        \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_BSE\",\n        \"quantity\": 5,\n        \"orderStatus\": \"PENDING\",\n        \"timestamp\": \"2023-11-07T20:19:07.496595\"\n    },\n    {\n        \"stockSymbol\": \"STK_BAJAJ_FINSERVE_EQ_NSE\",\n        \"quantity\": 5,\n        \"orderStatus\": \"PENDING\",\n        \"timestamp\": \"2023-11-07T20:30:15.8194\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get TradeHistory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/stocks/getTradeHistory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"stocks",
+								"getTradeHistory"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "TradeHistory Resp eg",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/stocks/getTradeHistory",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"stocks",
+										"getTradeHistory"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "115"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 07 Nov 2023 15:05:23 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"stockSymbol\": \"STK_WIPRO_EQ_NSE\",\n        \"orderType\": \"BUY\",\n        \"price\": 290,\n        \"quantity\": 3,\n        \"timestamp\": \"2023-11-06T16:37:02\"\n    }\n]"
+						}
+					]
+				}
+			]
+		}
+	]
+}
