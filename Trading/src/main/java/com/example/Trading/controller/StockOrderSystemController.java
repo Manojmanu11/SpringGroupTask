@@ -6,7 +6,6 @@ import com.example.Trading.entity.Order;
 import com.example.Trading.service.StockOrderSystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

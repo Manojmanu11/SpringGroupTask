@@ -1,7 +1,6 @@
 package com.example.Trading.exceptionhandler;
 
 import com.example.Trading.dto.ErrorDto;
-import com.example.Trading.exception.ConstraintVoilationException;
 import com.example.Trading.exception.InvalidOrderTypeException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
