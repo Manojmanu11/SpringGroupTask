@@ -1,10 +1,9 @@
 package com.example.Trading.repository;
 
-import com.example.Trading.dto.OrderType;
+
 import com.example.Trading.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

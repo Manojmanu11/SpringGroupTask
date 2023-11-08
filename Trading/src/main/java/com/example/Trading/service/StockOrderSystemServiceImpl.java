@@ -61,18 +61,16 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
                 }
             }
 
+            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
             if (updated) {
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
                 priceDTO.setInfoMsg("Successfully Updated");
                 priceDTO.setStockSymbol(req.getStockSymbol());
                 priceDTO.setPrice(newPrice);
-                return priceDTO;
             } else {
                 // No matching orders were found
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
                 priceDTO.setInfoMsg("No matching orders found pls check OrderType");
-                return priceDTO;
             }
+            return priceDTO;
         }
 
         return null; // Return null if no orders were found for the stock symbol
@@ -130,7 +128,8 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     public List<PortfolioDto> getPortfolio() {
 
         List<Order> orders = orderRepository.findAll();
-        List<PortfolioDto> portfolioDTOs = orders.stream().map(order -> {
+
+        return orders.stream().map(order -> {
             PortfolioDto portfolioDTO = new PortfolioDto();
             portfolioDTO.setStockSymbol(order.getStockSymbol());
             portfolioDTO.setQuantity(order.getQuantity());
@@ -138,16 +137,13 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
             portfolioDTO.setTimestamp(order.getTimestamp());
             return portfolioDTO;
         }).collect(Collectors.toList());
-
-        return portfolioDTOs;
     }
 
     public List<TradeDto> getTradeHistory() {
         List<Trade> trades = tradeRepository.findAll();
-        List<TradeDto> tradeDtoHistory = trades.stream()
+        return trades.stream()
                 .map(this::mapToTradeHistoryDTO)
                 .collect(Collectors.toList());
-        return tradeDtoHistory;
     }
 
     private TradeDto mapToTradeHistoryDTO(Trade trade) {
