@@ -40,17 +40,32 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
 
         if (!stockOrders.isEmpty()) {
             double newPrice = req.getPrice();
+            OrderType orderTypeToMatch = req.getOrderType();
+
+            boolean updated = false; // Flag to track if any orders were updated
 
             for (Order order : stockOrders) {
-                order.setPrice(newPrice);
-                orderRepository.save(order);
+                OrderType orderType = order.getOrderType();
+                if (orderType != null && orderType.equals(orderTypeToMatch)) {
+                    // Only update orders with the specified order type
+                    order.setPrice(newPrice);
+                    orderRepository.save(order);
+                    updated = true; // Mark that an order was updated
+                }
             }
 
-            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
-            priceDTO.setInfoMsg("Successfully Updated");
-            priceDTO.setStockSymbol(req.getStockSymbol());
-            priceDTO.setPrice(newPrice);
-            return priceDTO;
+            if (updated) {
+                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+                priceDTO.setInfoMsg("Successfully Updated");
+                priceDTO.setStockSymbol(req.getStockSymbol());
+                priceDTO.setPrice(newPrice);
+                return priceDTO;
+            } else {
+                // No matching orders were found
+                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+                priceDTO.setInfoMsg("No matching orders found pls check OrderType");
+                return priceDTO;
+            }
         }
         return null; // Return null if no orders were found for the stock symbol
     }
