@@ -34,8 +34,7 @@ public class RequestResponseFilter extends OncePerRequestFilter {
         String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
                 response.getCharacterEncoding());
 
-        LOGGER.info(
-                "FINISHED PROCESSING :\n METHOD={}\n; REQUESTURI={}\n; REQUEST PAYLOAD={}\n; RESPONSE CODE={}\n; RESPONSE={}\n; TIM TAKEN={}\n",
+        LOGGER.info("FINISHED PROCESSING :\n METHOD={}\n; REQUESTURI={}\n; REQUEST PAYLOAD={}\n; RESPONSE CODE={}\n; RESPONSE={}\n; TIM TAKEN={}\n",
                 request.getMethod(), request.getRequestURI(), requestBody, response.getStatus(), responseBody,
                 timeTaken);
         responseWrapper.copyBodyToResponse();
