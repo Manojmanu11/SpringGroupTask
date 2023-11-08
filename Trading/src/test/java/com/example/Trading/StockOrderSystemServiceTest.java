@@ -125,19 +125,23 @@ public class StockOrderSystemServiceTest {
         when(orderRepository.findSellOrders()).thenReturn(sellOrders);
 
         // Create mock buy and sell orders and add them to the respective lists
-        Order buyOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 10);
-        Order sellOrder = createMockOrder("ABC", 9.0,OrderType.SELL, StringConstants.PENDING, 15);
+        Order buyOrder = createMockOrder("ABC", 10.0, OrderType.BUY, StringConstants.PENDING, 10);
+        Order sellOrder = createMockOrder("ABC", 9.0, OrderType.SELL, StringConstants.PENDING, 15);
         buyOrders.add(buyOrder);
         sellOrders.add(sellOrder);
 
-// Access the private field 'additionalValue' in the StockOrderSystemServiceImpl class
+        // Mock the behavior of the tradeRepository.save() method
+        Trade mockBuyTrade = createMockTrade(buyOrder);
+        Trade mockSellTrade = createMockTrade(sellOrder);
+        when(tradeRepository.save(any(Trade.class))).thenReturn(mockBuyTrade, mockSellTrade);
 
+        // Access the private field 'additionalValue' in the StockOrderSystemServiceImpl class
         Field additionalValueField = StockOrderSystemServiceImpl.class.getDeclaredField("additionalValue");
 
         // Allow access to the private field
         additionalValueField.setAccessible(true);
 
-        // Set the 'additionalValue' field in the stockOrderService to say that updatePrice is excecuted.
+        // Set the 'additionalValue' field in the stockOrderService to say that updatePrice is executed.
         additionalValueField.set(stockOrderService, 1);
         stockOrderService.matchOrder();
 
@@ -148,6 +152,14 @@ public class StockOrderSystemServiceTest {
         assertEquals(0, buyOrder.getQuantity());
         assertEquals(5, sellOrder.getQuantity());
     }
+    private Trade createMockTrade(Order order) {
+        Trade trade = new Trade();
+        trade.setPrice(order.getPrice());
+        trade.setQuantity(order.getQuantity());
+        // Set other necessary attributes for the Trade
+        return trade;
+    }
+
 
 
     private Trade createSampleTrade(String stockSymbol, OrderType orderType, double price, int quantity) {

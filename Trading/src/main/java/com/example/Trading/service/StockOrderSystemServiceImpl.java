@@ -10,6 +10,7 @@ import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import jakarta.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
-
+@Slf4j
 @Transactional
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
     private final TradeRepository tradeRepository;
     int additionalValue = 0; // value will be updated is updatePrice is executed
-    private final Logger log = Logger.getLogger(getClass().getName());
 
     @Autowired
     public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
