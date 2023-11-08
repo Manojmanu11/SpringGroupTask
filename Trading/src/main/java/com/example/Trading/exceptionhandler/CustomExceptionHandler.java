@@ -1,8 +1,8 @@
 package com.example.Trading.exceptionhandler;
 
 import com.example.Trading.dto.ErrorDto;
-import com.example.Trading.exception.ConstraintVoilationException;
 import com.example.Trading.exception.InvalidOrderTypeException;
+import com.example.Trading.exception.CustomException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +39,13 @@ public class CustomExceptionHandler {
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest().body(errorList);
+    }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorDto> handleUserNotFoudException(CustomException ex) {
+        log.info("Returning customexception handler method:handleUserNotFoudException");
+        ErrorDto errorResponse = new ErrorDto();
+        errorResponse.setErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

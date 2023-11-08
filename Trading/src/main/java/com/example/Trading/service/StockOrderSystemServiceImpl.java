@@ -1,9 +1,11 @@
 package com.example.Trading.service;
 
+import com.example.Trading.constants.ErrorConstants;
 import com.example.Trading.constants.StringConstants;
 import com.example.Trading.dto.*;
 import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
+import com.example.Trading.exception.CustomException;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import jakarta.transaction.Transactional;
@@ -25,6 +27,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final TradeRepository tradeRepository;
     int additionalValue = 0; // value will be updated is updatePrice is executed
     private final Logger log = Logger.getLogger(getClass().getName());
+
     @Autowired
     public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
         this.orderRepository = orderRepository;
@@ -49,9 +52,10 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         additionalValue = 1;
 
         if (!stockOrders.isEmpty()) {
+            double newPrice = req.getPrice();
             for (Order order : stockOrders) {
                 // Update the price of each matching order to the new price
-                order.setPrice(req.getPrice());
+                order.setPrice(newPrice);
                 orderRepository.save(order);
             }
 
@@ -61,13 +65,9 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
             priceDTO.setPrice(req.getPrice());
             return priceDTO;
         } else {
-            // No matching orders were found
-            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
-            priceDTO.setInfoMsg("No matching orders found, please check stock symbol");
-            return priceDTO;
+            throw new CustomException(ErrorConstants.Symbl_Not_Found);
         }
     }
-
 
 
     @Scheduled(fixedRate = 60000) // Scheduled task to clear the updated price every minute
@@ -98,8 +98,8 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
                             Trade sellTrade = createTrade(sellOrder, StringConstants.Sell, transactionQuantity);
 
 
-//                            updateTradeHistory( buyTrade);
-//                            updateTradeHistory( sellTrade);
+                            mapToTradeHistoryDTO(buyTrade);
+                            mapToTradeHistoryDTO(sellTrade);
                         }
 
                     }
@@ -117,7 +117,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         trade.setQuantity(quantity);
         trade.setPrice(order.getPrice());
         trade.setTimestamp(LocalDateTime.now());
-        return trade;
+        return tradeRepository.save(trade);
     }
 
 

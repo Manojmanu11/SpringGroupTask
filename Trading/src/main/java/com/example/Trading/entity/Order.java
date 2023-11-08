@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = StringConstants.TABLE_NAME)
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotBlank(message = ErrorConstants.Stock_Symbol_Not_Blank)
