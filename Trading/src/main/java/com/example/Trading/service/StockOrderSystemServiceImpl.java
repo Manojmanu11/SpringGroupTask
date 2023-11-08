@@ -7,23 +7,24 @@ import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
+
 @Transactional
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
     private final TradeRepository tradeRepository;
     int additionalValue = 0; // value will be updated is updatePrice is executed
-
+    private final Logger log = Logger.getLogger(getClass().getName());
     @Autowired
     public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
         this.orderRepository = orderRepository;
@@ -43,39 +44,30 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         return orderRepository.save(order);
     }
 
-
-    public UpdatedPriceDto updatePrice(OrderDto req) {
-        List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
+    public UpdatedPriceDto updatePrice(UpdatePriceRequest req) {
+        List<Order> stockOrders = orderRepository.findByStockSymbol(req.getSymbolName());
         additionalValue = 1;
 
         if (!stockOrders.isEmpty()) {
-            double newPrice = req.getPrice();
-            OrderType orderTypeToMatch = req.getOrderType();
-            additionalValue = 1;
-
             for (Order order : stockOrders) {
-                OrderType orderType = order.getOrderType();
-                if (orderType != null && orderType.equals(orderTypeToMatch)) {
-                    // Only update orders with the specified order type
-                    order.setPrice(newPrice);
-                    orderRepository.save(order);
-                }
+                // Update the price of each matching order to the new price
+                order.setPrice(req.getPrice());
+                orderRepository.save(order);
             }
 
             UpdatedPriceDto priceDTO = new UpdatedPriceDto();
-            if (additionalValue == 1) {
-                priceDTO.setInfoMsg("Successfully Updated");
-                priceDTO.setStockSymbol(req.getStockSymbol());
-                priceDTO.setPrice(newPrice);
-            } else {
-                // No matching orders were found
-                priceDTO.setInfoMsg("No matching orders found pls check OrderType");
-            }
+            priceDTO.setInfoMsg("Successfully Updated");
+            priceDTO.setStockSymbol(req.getSymbolName());
+            priceDTO.setPrice(req.getPrice());
+            return priceDTO;
+        } else {
+            // No matching orders were found
+            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+            priceDTO.setInfoMsg("No matching orders found, please check stock symbol");
             return priceDTO;
         }
-
-        return null; // Return null if no orders were found for the stock symbol
     }
+
 
 
     @Scheduled(fixedRate = 60000) // Scheduled task to clear the updated price every minute
@@ -102,6 +94,12 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
                             updateOrder(buyOrder, transactionQuantity);//updating order.
                             updateOrder(sellOrder, transactionQuantity);
 
+                            Trade buyTrade = createTrade(buyOrder, StringConstants.Buy, transactionQuantity);
+                            Trade sellTrade = createTrade(sellOrder, StringConstants.Sell, transactionQuantity);
+
+
+//                            updateTradeHistory( buyTrade);
+//                            updateTradeHistory( sellTrade);
                         }
 
                     }
@@ -110,6 +108,16 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
             }
 
         }
+    }
+
+    private Trade createTrade(Order order, String orderType, int quantity) {
+        Trade trade = new Trade();
+        trade.setStockSymbol(order.getStockSymbol());
+        trade.setOrderType(OrderType.valueOf(orderType));
+        trade.setQuantity(quantity);
+        trade.setPrice(order.getPrice());
+        trade.setTimestamp(LocalDateTime.now());
+        return trade;
     }
 
 

@@ -29,8 +29,8 @@ public class StockOrderSystemController {
         return new ResponseEntity<>(order,HttpStatus.OK);
     }
     @PutMapping(UrlConstants.UPDATE_PRICE)
-    public ResponseEntity<UpdatedPriceDto> stockPrice(@RequestBody OrderDto orderDto) {
-        UpdatedPriceDto updatedOrder = stockOrderService.updatePrice(orderDto);
+    public ResponseEntity<UpdatedPriceDto> stockPrice(@RequestBody UpdatePriceRequest request) {
+        UpdatedPriceDto updatedOrder = stockOrderService.updatePrice(request);
 
         if (updatedOrder != null) {
             return new ResponseEntity<>(updatedOrder, HttpStatus.OK);

@@ -68,9 +68,8 @@ public class StockOrderSystemServiceTest {
 
     @Test
     public void testUpdatePriceSuccess() {
-        OrderDto request = new OrderDto();
-        request.setStockSymbol("ABC");
-        request.setOrderType(OrderType.BUY);
+        UpdatePriceRequest request = new UpdatePriceRequest();
+        request.setSymbolName("ABC");
         request.setPrice(100.0);
 
         Order mockOrder = createMockOrder("ABC", 10.0,OrderType.BUY, StringConstants.PENDING, 10);
