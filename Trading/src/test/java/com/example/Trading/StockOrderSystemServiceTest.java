@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -132,12 +131,18 @@ public class StockOrderSystemServiceTest {
         buyOrders.add(buyOrder);
         sellOrders.add(sellOrder);
 
-        Field additionalValueField = StockOrderSystemServiceImpl.class.getDeclaredField("additionalValue");
-        additionalValueField.setAccessible(true);
-        additionalValueField.set(stockOrderService, 1);
+// Access the private field 'additionalValue' in the StockOrderSystemServiceImpl class
 
+        Field additionalValueField = StockOrderSystemServiceImpl.class.getDeclaredField("additionalValue");
+
+        // Allow access to the private field
+        additionalValueField.setAccessible(true);
+
+        // Set the 'additionalValue' field in the stockOrderService to say that updatePrice is excecuted.
+        additionalValueField.set(stockOrderService, 1);
         stockOrderService.matchOrder();
 
+        // Verify that the expected repository methods were called
         verify(orderRepository).findBuyOrders();
         verify(orderRepository).findSellOrders();
 

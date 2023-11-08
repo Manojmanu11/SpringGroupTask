@@ -6,6 +6,7 @@ import com.example.Trading.entity.Order;
 import com.example.Trading.entity.Trade;
 import com.example.Trading.repository.OrderRepository;
 import com.example.Trading.repository.TradeRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,10 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     private final OrderRepository orderRepository;
     private final TradeRepository tradeRepository;
-    int additionalValue = 0;
+    int additionalValue = 0; // value will be updated is updatePrice is executed
 
     @Autowired
     public StockOrderSystemServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
@@ -41,6 +43,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         return orderRepository.save(order);
     }
 
+
     public UpdatedPriceDto updatePrice(OrderDto req) {
         List<Order> stockOrders = orderRepository.findByStockSymbol(req.getStockSymbol());
         additionalValue = 1;
@@ -48,8 +51,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
         if (!stockOrders.isEmpty()) {
             double newPrice = req.getPrice();
             OrderType orderTypeToMatch = req.getOrderType();
-
-            boolean updated = false; // Flag to track if any orders were updated
+            additionalValue = 1;
 
             for (Order order : stockOrders) {
                 OrderType orderType = order.getOrderType();
@@ -57,22 +59,19 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
                     // Only update orders with the specified order type
                     order.setPrice(newPrice);
                     orderRepository.save(order);
-                    updated = true; // Mark that an order was updated
                 }
             }
 
-            if (updated) {
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+            UpdatedPriceDto priceDTO = new UpdatedPriceDto();
+            if (additionalValue == 1) {
                 priceDTO.setInfoMsg("Successfully Updated");
                 priceDTO.setStockSymbol(req.getStockSymbol());
                 priceDTO.setPrice(newPrice);
-                return priceDTO;
             } else {
                 // No matching orders were found
-                UpdatedPriceDto priceDTO = new UpdatedPriceDto();
                 priceDTO.setInfoMsg("No matching orders found pls check OrderType");
-                return priceDTO;
             }
+            return priceDTO;
         }
 
         return null; // Return null if no orders were found for the stock symbol
@@ -86,40 +85,41 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
     }
 
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 30000) // Scheduled task to execute the orders based on criteria
     public void matchOrder() {
         log.info("Returned by StockOrderSystemService : matchOrder");
-        if (additionalValue != 0) {
-            System.out.println(additionalValue);
+        System.out.println(additionalValue);
+        if (additionalValue != 0) { // checking if updatedPrice method is called.
             log.info("Update price method is called");
             List<Order> buyOrders = orderRepository.findBuyOrders();
             List<Order> sellOrders = orderRepository.findSellOrders();
             for (Order buyOrder : buyOrders) {
                 for (Order sellOrder : sellOrders) {
                     if (isMatchingOrders(buyOrder, sellOrder)) {
+                        log.info("Order excuted successfully :");
                         int transactionQuantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
                         if (transactionQuantity > 0) {
-                            updateOrder(buyOrder, transactionQuantity);
+                            updateOrder(buyOrder, transactionQuantity);//updating order.
                             updateOrder(sellOrder, transactionQuantity);
 
-
                         }
+
                     }
                 }
+
             }
+
         }
     }
 
 
-
-
-    private boolean isMatchingOrders(Order buyOrder, Order sellOrder) {
+    private boolean isMatchingOrders(Order buyOrder, Order sellOrder) { // matching oder based on condition for execution.
         return buyOrder.getStockSymbol().equals(sellOrder.getStockSymbol()) && buyOrder.getPrice() >= sellOrder.getPrice() && buyOrder.getStatus().equals(StringConstants.PENDING) && sellOrder.getStatus().equals(StringConstants.PENDING);
     }
 
 
     void updateOrder(Order order, int quantity) {
-
+// updating order after transaction
         order.setQuantity(order.getQuantity() - quantity);
         if (order.getQuantity() == 0) {
             order.setStatus(StringConstants.EXECUTED);
@@ -131,6 +131,7 @@ public class StockOrderSystemServiceImpl implements StockOrderSystemService {
 
         List<Order> orders = orderRepository.findAll();
         List<PortfolioDto> portfolioDTOs = orders.stream().map(order -> {
+            log.info("Returned by StockOrderSystemService : getPortfolio");
             PortfolioDto portfolioDTO = new PortfolioDto();
             portfolioDTO.setStockSymbol(order.getStockSymbol());
             portfolioDTO.setQuantity(order.getQuantity());
